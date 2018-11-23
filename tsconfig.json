@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["es7", "esnext"],
+    "alwaysStrict": true,
+    "outDir": "dist",
+    "baseUrl": "."
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "currentProject": "test-project",
+  "currentGroup": "group1",
+  "projects": [
+    "~/workspace/github/minos/example/minos.js",
+    "~/workspace/github/minos/example/tests.js"
+  ],
+  "server": {
+    "port": 9009
+  }
+}

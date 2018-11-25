@@ -94,9 +94,19 @@ export class CommandRunner {
   /**
    * Run a bash command.
    */
-  private exec(bashCommand: string, fromPath: string): ChildProcess {
-    return exec(bashCommand, {
+  private exec(bashCommand: string, fromPath: string): Promise<string[]> {
+    const child = exec(bashCommand, {
       cwd: fromPath,
+    });
+
+    let output = [];
+    child.stdout.on('data', (data) => {
+      output.push(data);
+    });
+
+    return new Promise((resolve, reject) => {
+      child.addListener('error', reject);
+      child.addListener('exit', () => resolve(output));
     });
   }
 
@@ -104,7 +114,9 @@ export class CommandRunner {
    * Run a long-running bash command without waiting it to end.
    */
   private run(bashCommand: string, project: string, service: string, fromPath: string): ChildProcess {
-    const process = this.exec(bashCommand, fromPath);
+    const process = exec(bashCommand, {
+      cwd: fromPath,
+    });
     this.processes[project][service].push(process);
     return process;
   }

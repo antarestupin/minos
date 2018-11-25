@@ -153,15 +153,25 @@ var CommandRunner = /** @class */ (function () {
      * Run a bash command.
      */
     CommandRunner.prototype.exec = function (bashCommand, fromPath) {
-        return child_process_1.exec(bashCommand, {
+        var child = child_process_1.exec(bashCommand, {
             cwd: fromPath,
+        });
+        var output = [];
+        child.stdout.on('data', function (data) {
+            output.push(data);
+        });
+        return new Promise(function (resolve, reject) {
+            child.addListener('error', reject);
+            child.addListener('exit', function () { return resolve(output); });
         });
     };
     /**
      * Run a long-running bash command without waiting it to end.
      */
     CommandRunner.prototype.run = function (bashCommand, project, service, fromPath) {
-        var process = this.exec(bashCommand, fromPath);
+        var process = child_process_1.exec(bashCommand, {
+            cwd: fromPath,
+        });
         this.processes[project][service].push(process);
         return process;
     };

@@ -5,9 +5,9 @@
   "author": "Antares Tupin <antares.tupin@gmail.com>",
   "license": "MIT",
   "main": "dist/lib/index.js",
-  "types": "dist/lib/index.d.ts",
+  "types": "dist",
   "bin": {
-    "minos": "dist/scripts/index.js"
+    "minos": "dist/cli/index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

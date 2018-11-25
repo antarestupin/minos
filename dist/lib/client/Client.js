@@ -66,6 +66,19 @@ var Client = /** @class */ (function () {
             });
         });
     };
+    Client.prototype.changeConfig = function (newConfig) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, axios_1.default.post("http://localhost:" + this.serverConfig.port + "/api/config", newConfig)];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response.data.data];
+                }
+            });
+        });
+    };
     Client.prototype.shutdown = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {

@@ -9,6 +9,10 @@ export declare class UserConfigBuilder {
      */
     private getProjectConfig(path);
     /**
+     * Validate project configuration.
+     */
+    private static validateProjectConfig(projectConfig, path);
+    /**
      * Modify the config to handle shortcuts and default values.
      */
     private static serviceConfigWithDefaultValues(service);

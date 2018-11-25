@@ -56,9 +56,13 @@ var UserConfigBuilder = /** @class */ (function () {
             var projects;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Promise.all(rootConfig.projects
-                            .map(UserConfigBuilder.replaceHomeInPath)
-                            .map(this.getProjectConfig))];
+                    case 0:
+                        rootConfig.projects = rootConfig.projects || [];
+                        rootConfig.server = rootConfig.server || {};
+                        rootConfig.server.port = rootConfig.server.port || config_1.defaultServerConf.port;
+                        return [4 /*yield*/, Promise.all(rootConfig.projects
+                                .map(UserConfigBuilder.replaceHomeInPath)
+                                .map(this.getProjectConfig))];
                     case 1:
                         projects = _a.sent();
                         return [2 /*return*/, __assign({}, rootConfig, { projects: projects })];
@@ -77,12 +81,34 @@ var UserConfigBuilder = /** @class */ (function () {
                     case 0: return [4 /*yield*/, Promise.resolve().then(function () { return require(path); })];
                     case 1:
                         projectConfig = _a.sent();
-                        // TODO: validate config before setting default values
+                        projectConfig.services = projectConfig.services || [];
+                        projectConfig.groups = projectConfig.groups || [];
+                        projectConfig.groups.forEach(function (group) { return group.services = group.services || []; });
+                        UserConfigBuilder.validateProjectConfig(projectConfig, path);
                         // default values
                         projectConfig.services.map(UserConfigBuilder.serviceConfigWithDefaultValues);
                         return [2 /*return*/, projectConfig];
                 }
             });
+        });
+    };
+    /**
+     * Validate project configuration.
+     */
+    UserConfigBuilder.validateProjectConfig = function (projectConfig, path) {
+        if (!projectConfig.name) {
+            throw "A project has no name (at path " + path + ").";
+        }
+        if (!projectConfig.groups.every(function (group) { return !!group.name; })) {
+            throw "A group has no name (in project " + projectConfig.name + ").";
+        }
+        projectConfig.services.forEach(function (service) {
+            if (!service.name) {
+                throw "A service has no name (in project " + projectConfig.name + ").";
+            }
+            if (!service.path) {
+                throw "Service " + service.name + " has no path.";
+            }
         });
     };
     /**

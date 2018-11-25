@@ -64,9 +64,28 @@ program
     });
 }); });
 program
+    .command('set <key> <value>')
+    .description('Set a global configuration value.')
+    .action(function (key, value) { return __awaiter(_this, void 0, void 0, function () {
+    var configuration, client, _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, globalConfig_1.getGlobalConfig()];
+            case 1:
+                configuration = _b.sent();
+                client = new Client_1.Client(configuration.server);
+                return [4 /*yield*/, client.changeConfig((_a = {}, _a[key] = value, _a))];
+            case 2:
+                _b.sent();
+                console.log('Configuration updated.');
+                return [2 /*return*/];
+        }
+    });
+}); });
+program
     .command('command <command> [targetType] [target]')
     .alias('c')
-    .description('Execute the command on every service that implements it in target.')
+    .description('Execute the command on every service that implements it in target. [targetType] must be group or service.')
     .action(function (command, type, target) { return __awaiter(_this, void 0, void 0, function () {
     var configuration, client, _a, targetType, project, serviceOrGroup, result, _b;
     return __generator(this, function (_c) {
@@ -97,7 +116,15 @@ program
         }
     });
 }); });
+program
+    .command('*')
+    .action(function () {
+    program.help();
+});
 program.parse(process.argv);
+if (!process.argv.slice(2).length) {
+    program.outputHelp();
+}
 /**
  * Get project and target, with default values from global config.
  */

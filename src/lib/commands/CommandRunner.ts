@@ -14,6 +14,7 @@ export class CommandRunner {
    * Run a command on each service of a group.
    */
   async runCommandOnGroup(project: string, group: string, command: string): Promise<{[service: string]: any}> {
+    // TODO
     const services = this.configuration
       .projects.filter(({name}) => name === project)[0]
       .groups.filter(({name}) => name === group)[0].services;
@@ -32,20 +33,22 @@ export class CommandRunner {
    * Run a service command with provided context.
    */
   async runCommandOnService(project: string, service: string, command: string): Promise<any> {
+    // TODO
     const serviceConfig = this.configuration
       .projects.filter(({name}) => name === project)[0]
       .services.filter(({name}) => name === service)[0];
 
+    // don't run commands that are not defined
     if (!serviceConfig.commands[command]) {
       return null;
     }
 
-    if (!this.processes[project]) {
-      this.processes[project] = {};
-    }
+    this.processes[project] = this.processes[project] || {};
+    this.processes[project][service] = this.processes[project][service] || [];
 
-    if (!this.processes[project][service]) {
-      this.processes[project][service] = [];
+    // don't run again services already running
+    if (command === 'start' && this.processes[project][service].length > 0) {
+      return null;
     }
 
     const result = await serviceConfig.commands[command]({
@@ -80,9 +83,7 @@ export class CommandRunner {
    */
   private run(bashCommand: string, project: string, service: string, fromPath: string): ChildProcess {
     const process = this.exec(bashCommand, fromPath);
-
     this.processes[project][service].push(process);
-
     return process;
   }
 }

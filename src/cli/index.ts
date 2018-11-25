@@ -16,14 +16,26 @@ program
   .action(async () => {
     const configuration = await getGlobalConfig();
     const client = new Client(configuration.server);
+
     await client.shutdown();
     console.log('Server shut down.');
   });
 
 program
+  .command('set <key> <value>')
+  .description('Set a global configuration value.')
+  .action(async (key, value) => {
+    const configuration = await getGlobalConfig();
+    const client = new Client(configuration.server);
+
+    await client.changeConfig({[key]: value});
+    console.log('Configuration updated.');
+  });
+
+program
   .command('command <command> [targetType] [target]')
   .alias('c')
-  .description('Execute the command on every service that implements it in target.')
+  .description('Execute the command on every service that implements it in target. [targetType] must be group or service.')
   .action(async (command, type, target) => {
     const configuration = await getGlobalConfig();
     const client = new Client(configuration.server);
@@ -45,12 +57,22 @@ program
     console.log(JSON.stringify(result, null, 2));
   });
 
+program
+  .command('*')
+  .action(() => {
+    program.help();
+  });
+
 program.parse(process.argv);
+
+if (!process.argv.slice(2).length) {
+  program.outputHelp();
+}
 
 /**
  * Get project and target, with default values from global config.
  */
-function parseTarget(targetType: string, target: string, configuration: userConfig): {targetType: string, project: string, serviceOrGroup: string} {
+function parseTarget(targetType: string, target: string, configuration: userConfig): {targetType: string, project: string, serviceOrGroup: string;} {
   targetType = targetType || 'group';
   target = target || '';
   let [parsedProject, parsedServiceOrGroup] = target.split(':');

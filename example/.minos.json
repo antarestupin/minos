@@ -4,8 +4,5 @@
   "projects": [
     "~/workspace/github/minos/example/minos.js",
     "~/workspace/github/minos/example/tests.js"
-  ],
-  "server": {
-    "port": 9009
-  }
+  ]
 }

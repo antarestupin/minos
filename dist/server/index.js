@@ -37,6 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var CommandRunner_1 = require("../lib/commands/CommandRunner");
 var globalConfig_1 = require("../lib/userConfig/globalConfig");
+var config_1 = require("../config");
+var fs_1 = require("fs");
 var express = require('express');
 var bodyParser = require('body-parser');
 function startServer() {
@@ -62,9 +64,11 @@ function startServer() {
                     return [4 /*yield*/, load()];
                 case 1:
                     _a.sent();
+                    // UI
                     app.get('/', function (req, res) {
                         res.send('Hello World!');
                     });
+                    // Execute command on a service
                     app.post('/api/command/service', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
                         var _a, command, project, service, result;
                         return __generator(this, function (_b) {
@@ -83,6 +87,7 @@ function startServer() {
                             }
                         });
                     }); });
+                    // Execute command on a group
                     app.post('/api/command/group', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
                         var _a, command, project, group, result;
                         return __generator(this, function (_b) {
@@ -101,11 +106,30 @@ function startServer() {
                             }
                         });
                     }); });
+                    // Update global configuration
+                    app.post('/api/config', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
+                        var rawConfig, keys;
+                        return __generator(this, function (_a) {
+                            rawConfig = globalConfig_1.getRawGlobalConfig();
+                            keys = Object.keys(req.body);
+                            keys.forEach(function (key) {
+                                if (config_1.configurableKeysInConf.indexOf(key) !== -1) {
+                                    rawConfig[key] = req.body[key];
+                                }
+                            });
+                            fs_1.writeFileSync(config_1.globalConfigPath, JSON.stringify(rawConfig, null, 2));
+                            res.status(204);
+                            res.send();
+                            return [2 /*return*/];
+                        });
+                    }); });
+                    // Shut down the server
                     app.post('/api/shutdown', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    res.send('Shutting down.');
+                                    res.status(202);
+                                    res.send();
                                     return [4 /*yield*/, server.close()];
                                 case 1:
                                     _a.sent();

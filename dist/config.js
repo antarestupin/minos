@@ -4,3 +4,7 @@ exports.globalConfigPath = process.env.HOME + "/workspace/github/minos/example/.
 exports.defaultUserProjectConfig = {
     repositoryType: 'git',
 };
+exports.defaultServerConf = {
+    port: 9009,
+};
+exports.configurableKeysInConf = ['currentProject', 'currentGroup'];

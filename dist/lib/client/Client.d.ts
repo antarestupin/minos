@@ -4,5 +4,6 @@ export declare class Client {
     constructor(serverConfig: serverConfig);
     executeCommandOnService(command: string, project: string, service: string): Promise<Object>;
     executeCommandOnGroup(command: string, project: string, group: string): Promise<Object>;
+    changeConfig(newConfig: Object): Promise<Object>;
     shutdown(): Promise<Object>;
 }

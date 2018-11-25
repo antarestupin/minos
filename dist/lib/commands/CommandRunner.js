@@ -92,14 +92,15 @@ var CommandRunner = /** @class */ (function () {
                             var name = _a.name;
                             return name === service;
                         })[0];
+                        // don't run commands that are not defined
                         if (!serviceConfig.commands[command]) {
                             return [2 /*return*/, null];
                         }
-                        if (!this.processes[project]) {
-                            this.processes[project] = {};
-                        }
-                        if (!this.processes[project][service]) {
-                            this.processes[project][service] = [];
+                        this.processes[project] = this.processes[project] || {};
+                        this.processes[project][service] = this.processes[project][service] || [];
+                        // don't run again services already running
+                        if (command === 'start' && this.processes[project][service].length > 0) {
+                            return [2 /*return*/, null];
                         }
                         return [4 /*yield*/, serviceConfig.commands[command]({
                                 service: serviceConfig,

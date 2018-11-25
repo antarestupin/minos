@@ -25,6 +25,15 @@ export class Client {
     return response.data.data;
   }
 
+  async changeConfig(newConfig: Object): Promise<Object> {
+    const response = await axios.post(
+      `http://localhost:${this.serverConfig.port}/api/config`,
+      newConfig
+    );
+
+    return response.data.data;
+  }
+
   async shutdown(): Promise<Object> {
     return await axios.post(`http://localhost:${this.serverConfig.port}/api/shutdown`);
   }

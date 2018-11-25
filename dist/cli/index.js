@@ -48,10 +48,12 @@ program
     .command('stop-server')
     .description('Stop the local server.')
     .action(function () { return __awaiter(_this, void 0, void 0, function () {
-    var configuration, client;
+    var configuration, client, e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, globalConfig_1.getGlobalConfig()];
+            case 0:
+                _a.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, globalConfig_1.getGlobalConfig()];
             case 1:
                 configuration = _a.sent();
                 client = new Client_1.Client(configuration.server);
@@ -59,7 +61,12 @@ program
             case 2:
                 _a.sent();
                 console.log('Server shut down.');
-                return [2 /*return*/];
+                return [3 /*break*/, 4];
+            case 3:
+                e_1 = _a.sent();
+                console.log(e_1);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
@@ -67,10 +74,12 @@ program
     .command('set <key> <value>')
     .description('Set a global configuration value.')
     .action(function (key, value) { return __awaiter(_this, void 0, void 0, function () {
-    var configuration, client, _a;
+    var configuration, client, e_2, _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
-            case 0: return [4 /*yield*/, globalConfig_1.getGlobalConfig()];
+            case 0:
+                _b.trys.push([0, 3, , 4]);
+                return [4 /*yield*/, globalConfig_1.getGlobalConfig()];
             case 1:
                 configuration = _b.sent();
                 client = new Client_1.Client(configuration.server);
@@ -78,7 +87,12 @@ program
             case 2:
                 _b.sent();
                 console.log('Configuration updated.');
-                return [2 /*return*/];
+                return [3 /*break*/, 4];
+            case 3:
+                e_2 = _b.sent();
+                console.log(e_2);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
         }
     });
 }); });
@@ -87,14 +101,17 @@ program
     .alias('c')
     .description('Execute the command on every service that implements it in target. [targetType] must be group or service.')
     .action(function (command, type, target) { return __awaiter(_this, void 0, void 0, function () {
-    var configuration, client, _a, targetType, project, serviceOrGroup, result, _b;
+    var configuration, client, _a, targetType, project, serviceOrGroup, result, _b, e_3;
     return __generator(this, function (_c) {
         switch (_c.label) {
-            case 0: return [4 /*yield*/, globalConfig_1.getGlobalConfig()];
+            case 0:
+                _c.trys.push([0, 8, , 9]);
+                return [4 /*yield*/, globalConfig_1.getGlobalConfig()];
             case 1:
                 configuration = _c.sent();
                 client = new Client_1.Client(configuration.server);
                 _a = parseTarget(type, target, configuration), targetType = _a.targetType, project = _a.project, serviceOrGroup = _a.serviceOrGroup;
+                result = void 0;
                 _b = targetType;
                 switch (_b) {
                     case 'service': return [3 /*break*/, 2];
@@ -112,7 +129,12 @@ program
             case 6: throw "Target type must be either 'service' or 'group'.";
             case 7:
                 console.log(JSON.stringify(result, null, 2));
-                return [2 /*return*/];
+                return [3 /*break*/, 9];
+            case 8:
+                e_3 = _c.sent();
+                console.log(e_3);
+                return [3 /*break*/, 9];
+            case 9: return [2 /*return*/];
         }
     });
 }); });

@@ -31,20 +31,30 @@ export async function startServer() {
   app.post('/api/command/service', async (req, res) => {
     await load();
     const {command, project, service} = req.body;
-    const result = await commandRunner.runCommandOnService(project, service, command);
-    res.send({
-      data: result
-    });
+    try {
+      const result = await commandRunner.runCommandOnService(project, service, command);
+      res.send({
+        data: result,
+      });
+    } catch (e) {
+      res.status(400);
+      res.send(e.toString());
+    }
   });
 
   // Execute command on a group
   app.post('/api/command/group', async (req, res) => {
     await load();
     const {command, project, group} = req.body;
-    const result = await commandRunner.runCommandOnGroup(project, group, command);
-    res.send({
-      data: result
-    });
+    try {
+      const result = await commandRunner.runCommandOnGroup(project, group, command);
+      res.send({
+        data: result
+      });
+    } catch (e) {
+      res.status(400);
+      res.send(e.toString());
+    }
   });
 
   // Update global configuration

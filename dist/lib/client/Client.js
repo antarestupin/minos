@@ -40,52 +40,69 @@ var Client = /** @class */ (function () {
     function Client(serverConfig) {
         this.serverConfig = serverConfig;
     }
-    Client.prototype.executeCommandOnService = function (command, project, service) {
+    Client.prototype.sendRequest = function (request) {
         return __awaiter(this, void 0, void 0, function () {
-            var response;
+            var response, e_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, axios_1.default.post("http://localhost:" + this.serverConfig.port + "/api/command/service", { command: command, project: project, service: service })];
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, request()];
                     case 1:
                         response = _a.sent();
-                        return [2 /*return*/, response.data.data];
+                        return [2 /*return*/, response.data];
+                    case 2:
+                        e_1 = _a.sent();
+                        if (!!e_1.response) {
+                            throw e_1.response.data;
+                        }
+                        else {
+                            throw "Could not connect to Minos server. Are you sure it's running?";
+                        }
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Client.prototype.executeCommandOnService = function (command, project, service) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.sendRequest(function () { return axios_1.default.post("http://localhost:" + _this.serverConfig.port + "/api/command/service", { command: command, project: project, service: service }); })];
+                    case 1: return [2 /*return*/, (_a.sent()).data];
                 }
             });
         });
     };
     Client.prototype.executeCommandOnGroup = function (command, project, group) {
         return __awaiter(this, void 0, void 0, function () {
-            var response;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, axios_1.default.post("http://localhost:" + this.serverConfig.port + "/api/command/group", { command: command, project: project, group: group })];
-                    case 1:
-                        response = _a.sent();
-                        return [2 /*return*/, response.data.data];
+                    case 0: return [4 /*yield*/, this.sendRequest(function () { return axios_1.default.post("http://localhost:" + _this.serverConfig.port + "/api/command/group", { command: command, project: project, group: group }); })];
+                    case 1: return [2 /*return*/, (_a.sent()).data];
                 }
             });
         });
     };
     Client.prototype.changeConfig = function (newConfig) {
         return __awaiter(this, void 0, void 0, function () {
-            var response;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, axios_1.default.post("http://localhost:" + this.serverConfig.port + "/api/config", newConfig)];
-                    case 1:
-                        response = _a.sent();
-                        return [2 /*return*/, response.data.data];
+                    case 0: return [4 /*yield*/, this.sendRequest(function () { return axios_1.default.post("http://localhost:" + _this.serverConfig.port + "/api/config", newConfig); })];
+                    case 1: return [2 /*return*/, (_a.sent()).data];
                 }
             });
         });
     };
     Client.prototype.shutdown = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, axios_1.default.post("http://localhost:" + this.serverConfig.port + "/api/shutdown")];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
+                return [2 /*return*/, this.sendRequest(function () { return axios_1.default.post("http://localhost:" + _this.serverConfig.port + "/api/shutdown"); })];
             });
         });
     };

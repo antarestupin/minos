@@ -54,15 +54,28 @@ var CommandRunner = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        services = this.configuration
-                            .projects.filter(function (_a) {
-                            var name = _a.name;
-                            return name === project;
-                        })[0]
-                            .groups.filter(function (_a) {
-                            var name = _a.name;
-                            return name === group;
-                        })[0].services;
+                        try {
+                            services = this.configuration
+                                .projects.filter(function (_a) {
+                                var name = _a.name;
+                                return name === project;
+                            })[0]
+                                .groups.filter(function (_a) {
+                                var name = _a.name;
+                                return name === group;
+                            })[0].services;
+                        }
+                        catch (e) {
+                            if (e.message.indexOf('groups') !== -1) {
+                                throw "No project " + project + " found.";
+                            }
+                            else if (e.message.indexOf('services') !== -1) {
+                                throw "No group " + group + " found.";
+                            }
+                            else {
+                                throw e.message;
+                            }
+                        }
                         return [4 /*yield*/, Promise.all(services.map(function (service) { return _this.runCommandOnService(project, service, command); }))];
                     case 1:
                         commandResults = _a.sent();
@@ -83,15 +96,28 @@ var CommandRunner = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        serviceConfig = this.configuration
-                            .projects.filter(function (_a) {
-                            var name = _a.name;
-                            return name === project;
-                        })[0]
-                            .services.filter(function (_a) {
-                            var name = _a.name;
-                            return name === service;
-                        })[0];
+                        try {
+                            serviceConfig = this.configuration
+                                .projects.filter(function (_a) {
+                                var name = _a.name;
+                                return name === project;
+                            })[0]
+                                .services.filter(function (_a) {
+                                var name = _a.name;
+                                return name === service;
+                            })[0];
+                        }
+                        catch (e) {
+                            if (e.indexOf('services') !== -1) {
+                                throw "No project " + project + " found.";
+                            }
+                            else {
+                                throw e;
+                            }
+                        }
+                        if (!serviceConfig) {
+                            throw "No service " + service + " found.";
+                        }
                         // don't run commands that are not defined
                         if (!serviceConfig.commands[command]) {
                             return [2 /*return*/, null];

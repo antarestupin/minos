@@ -70,39 +70,57 @@ function startServer() {
                     });
                     // Execute command on a service
                     app.post('/api/command/service', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-                        var _a, command, project, service, result;
+                        var _a, command, project, service, result, e_1;
                         return __generator(this, function (_b) {
                             switch (_b.label) {
                                 case 0: return [4 /*yield*/, load()];
                                 case 1:
                                     _b.sent();
                                     _a = req.body, command = _a.command, project = _a.project, service = _a.service;
-                                    return [4 /*yield*/, commandRunner.runCommandOnService(project, service, command)];
+                                    _b.label = 2;
                                 case 2:
+                                    _b.trys.push([2, 4, , 5]);
+                                    return [4 /*yield*/, commandRunner.runCommandOnService(project, service, command)];
+                                case 3:
                                     result = _b.sent();
                                     res.send({
-                                        data: result
+                                        data: result,
                                     });
-                                    return [2 /*return*/];
+                                    return [3 /*break*/, 5];
+                                case 4:
+                                    e_1 = _b.sent();
+                                    res.status(400);
+                                    res.send(e_1.toString());
+                                    return [3 /*break*/, 5];
+                                case 5: return [2 /*return*/];
                             }
                         });
                     }); });
                     // Execute command on a group
                     app.post('/api/command/group', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-                        var _a, command, project, group, result;
+                        var _a, command, project, group, result, e_2;
                         return __generator(this, function (_b) {
                             switch (_b.label) {
                                 case 0: return [4 /*yield*/, load()];
                                 case 1:
                                     _b.sent();
                                     _a = req.body, command = _a.command, project = _a.project, group = _a.group;
-                                    return [4 /*yield*/, commandRunner.runCommandOnGroup(project, group, command)];
+                                    _b.label = 2;
                                 case 2:
+                                    _b.trys.push([2, 4, , 5]);
+                                    return [4 /*yield*/, commandRunner.runCommandOnGroup(project, group, command)];
+                                case 3:
                                     result = _b.sent();
                                     res.send({
                                         data: result
                                     });
-                                    return [2 /*return*/];
+                                    return [3 /*break*/, 5];
+                                case 4:
+                                    e_2 = _b.sent();
+                                    res.status(400);
+                                    res.send(e_2.toString());
+                                    return [3 /*break*/, 5];
+                                case 5: return [2 /*return*/];
                             }
                         });
                     }); });

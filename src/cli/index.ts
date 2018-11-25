@@ -14,22 +14,30 @@ program
   .command('stop-server')
   .description('Stop the local server.')
   .action(async () => {
-    const configuration = await getGlobalConfig();
-    const client = new Client(configuration.server);
+    try {
+      const configuration = await getGlobalConfig();
+      const client = new Client(configuration.server);
 
-    await client.shutdown();
-    console.log('Server shut down.');
+      await client.shutdown();
+      console.log('Server shut down.');
+    } catch (e) {
+      console.log(e);
+    }
   });
 
 program
   .command('set <key> <value>')
   .description('Set a global configuration value.')
   .action(async (key, value) => {
-    const configuration = await getGlobalConfig();
-    const client = new Client(configuration.server);
+    try {
+      const configuration = await getGlobalConfig();
+      const client = new Client(configuration.server);
 
-    await client.changeConfig({[key]: value});
-    console.log('Configuration updated.');
+      await client.changeConfig({[key]: value});
+      console.log('Configuration updated.');
+    } catch (e) {
+      console.log(e);
+    }
   });
 
 program
@@ -37,24 +45,28 @@ program
   .alias('c')
   .description('Execute the command on every service that implements it in target. [targetType] must be group or service.')
   .action(async (command, type, target) => {
-    const configuration = await getGlobalConfig();
-    const client = new Client(configuration.server);
+    try {
+      const configuration = await getGlobalConfig();
+      const client = new Client(configuration.server);
 
-    let {targetType, project, serviceOrGroup} = parseTarget(type, target, configuration);
+      let {targetType, project, serviceOrGroup} = parseTarget(type, target, configuration);
 
-    let result;
-    switch (targetType) {
-      case 'service':
-        result = await client.executeCommandOnService(command, project, serviceOrGroup);
-        break;
-      case 'group':
-        result = await client.executeCommandOnGroup(command, project, serviceOrGroup);
-        break;
-      default:
-        throw `Target type must be either 'service' or 'group'.`;
+      let result;
+      switch (targetType) {
+        case 'service':
+          result = await client.executeCommandOnService(command, project, serviceOrGroup);
+          break;
+        case 'group':
+          result = await client.executeCommandOnGroup(command, project, serviceOrGroup);
+          break;
+        default:
+          throw `Target type must be either 'service' or 'group'.`;
+      }
+
+      console.log(JSON.stringify(result, null, 2));
+    } catch (e) {
+      console.log(e);
     }
-
-    console.log(JSON.stringify(result, null, 2));
   });
 
 program

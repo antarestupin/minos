@@ -39,7 +39,25 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var Client_1 = require("../lib/client/Client");
 var server_1 = require("../server");
 var globalConfig_1 = require("../lib/userConfig/globalConfig");
+var config_1 = require("../config");
+var fs_1 = require("fs");
 var program = require('commander');
+program
+    .command('init')
+    .description('Create the global configuration file.')
+    .action(function () {
+    if (!fs_1.existsSync(config_1.globalConfigPath)) {
+        fs_1.writeFileSync(config_1.globalConfigPath, JSON.stringify({
+            currentProject: '',
+            currentGroup: '',
+            projects: [],
+        }, null, 2));
+        console.log("Configuration file created at " + config_1.globalConfigPath);
+    }
+    else {
+        console.log("Configuration file already exists at " + config_1.globalConfigPath);
+    }
+});
 program
     .command('start-server')
     .description('Start local server that will do the job.')
@@ -140,6 +158,7 @@ program
 }); });
 program
     .command('*')
+    .description('Helper message.')
     .action(function () {
     program.help();
 });

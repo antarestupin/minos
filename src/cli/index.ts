@@ -2,8 +2,27 @@ import {Client} from '../lib/client/Client';
 import {startServer} from '../server';
 import {getGlobalConfig} from '../lib/userConfig/globalConfig';
 import {userConfig} from '../lib/userConfig/userConfigTypes';
+import {globalConfigPath} from '../config';
+import {existsSync, writeFileSync} from 'fs';
 
 const program = require('commander');
+
+program
+  .command('init')
+  .description('Create the global configuration file.')
+  .action(() => {
+    if (!existsSync(globalConfigPath)) {
+      writeFileSync(globalConfigPath, JSON.stringify({
+        currentProject: '',
+        currentGroup: '',
+        projects: [],
+      }, null, 2));
+
+      console.log(`Configuration file created at ${globalConfigPath}`);
+    } else {
+      console.log(`Configuration file already exists at ${globalConfigPath}`);
+    }
+  });
 
 program
   .command('start-server')
@@ -71,6 +90,7 @@ program
 
 program
   .command('*')
+  .description('Helper message.')
   .action(() => {
     program.help();
   });

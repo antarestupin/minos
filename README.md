@@ -115,16 +115,16 @@ minos c start service service1 # the project is optional as defined as currentPr
 
 These are the default commands:
 
-- `Install`: Install the service from the remote source; `git clone ${repositoryUrl} ${path}` by default
-- `Build`: Build the service; do nothing by default
-- `Start`: Start the service; must be defined
-- `Stop`: Stop the service; kill the running processes by default
-- `Is running`: Says if the service is running; checks running instances by default
-- `Restart`: Restart the service; stop & start by default
-- `Update`: Update the service from the remote source; `git pull origin master` + build by default
-- `Is up-to-date`: Says if the service is up to date; default behavior not defined yet
+- `install`: Install the service from the remote source; `git clone ${repositoryUrl} ${path}` by default
+- `build`: Build the service; do nothing by default
+- `start`: Start the service; must be defined
+- `stop`: Stop the service; kill the running processes by default
+- `isRunning`: Says if the service is running; checks running instances by default
+- `restart`: Restart the service; stop & start by default
+- `update`: Update the service from the remote source; `git pull origin master` + build by default
+- `isUpToDate`: Says if the service is up to date; default behavior not defined yet
 
 You can also add custom commands. Here are some examples:
 
-- `Pause`: pause Docker containers
-- `Clean`: removes everything
+- `pause`: pause Docker containers
+- `clean`: removes everything

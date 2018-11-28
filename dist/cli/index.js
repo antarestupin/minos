@@ -42,6 +42,7 @@ var globalConfig_1 = require("../lib/userConfig/globalConfig");
 var config_1 = require("../config");
 var fs_1 = require("fs");
 var program = require('commander');
+var WebSocket = require('ws');
 program
     .command('init')
     .description('Create the global configuration file.')
@@ -153,6 +154,40 @@ program
                 console.log(e_3);
                 return [3 /*break*/, 9];
             case 9: return [2 /*return*/];
+        }
+    });
+}); });
+program
+    .command('logs <target>')
+    .description('Execute the command on every service that implements it in target. [targetType] must be group or service.')
+    .action(function (target) { return __awaiter(_this, void 0, void 0, function () {
+    var configuration, _a, project_1, serviceOrGroup_1, ws_1, e_4;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, globalConfig_1.getGlobalConfig()];
+            case 1:
+                configuration = _b.sent();
+                _a = parseTarget('service', target, configuration), project_1 = _a.project, serviceOrGroup_1 = _a.serviceOrGroup;
+                ws_1 = new WebSocket("ws://localhost:" + configuration.server.port);
+                ws_1.on('open', function () {
+                    var message = {
+                        path: 'logs',
+                        project: project_1,
+                        service: serviceOrGroup_1,
+                    };
+                    ws_1.send(JSON.stringify(message));
+                });
+                ws_1.on('message', function (message) {
+                    console.log(message);
+                });
+                return [3 /*break*/, 3];
+            case 2:
+                e_4 = _b.sent();
+                console.log(e_4);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); });

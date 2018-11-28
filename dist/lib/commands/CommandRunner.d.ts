@@ -6,14 +6,20 @@ export declare class CommandRunner {
     /** Store of running services processes. */
     processes: {
         [project: string]: {
-            [service: string]: ChildProcess[];
+            [service: string]: {
+                process: ChildProcess;
+                logs: string[];
+            }[];
         };
     };
     constructor(configuration: userConfig, 
         /** Store of running services processes. */
         processes?: {
         [project: string]: {
-            [service: string]: ChildProcess[];
+            [service: string]: {
+                process: ChildProcess;
+                logs: string[];
+            }[];
         };
     });
     /**

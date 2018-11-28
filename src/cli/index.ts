@@ -6,6 +6,7 @@ import {globalConfigPath} from '../config';
 import {existsSync, writeFileSync} from 'fs';
 
 const program = require('commander');
+const WebSocket = require('ws');
 
 program
   .command('init')
@@ -87,6 +88,35 @@ program
       console.log(e);
     }
   });
+
+program
+  .command('logs <target>')
+  .description('Execute the command on every service that implements it in target. [targetType] must be group or service.')
+  .action(async (target) => {
+    try {
+      const configuration = await getGlobalConfig();
+      // const client = new Client(configuration.server);
+
+      let {project, serviceOrGroup} = parseTarget('service', target, configuration);
+
+      const ws = new WebSocket(`ws://localhost:${configuration.server.port}`);
+      ws.on('open', () => {
+        const message = {
+          path: 'logs',
+          project,
+          service: serviceOrGroup,
+        };
+        ws.send(JSON.stringify(message));
+      });
+      ws.on('message', (message: string) => {
+        console.log(message);
+      });
+
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
 
 program
   .command('*')

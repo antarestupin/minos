@@ -4,8 +4,11 @@ import {Server} from 'http';
 import {userConfig} from '../lib/userConfig/userConfigTypes';
 import {configurableKeysInConf, globalConfigPath} from '../config';
 import {writeFileSync} from 'fs';
+import * as http from 'http';
+import {Server as WSServer} from 'ws';
 
 const express = require('express');
+const WebSocket = require('ws');
 const bodyParser = require('body-parser');
 
 export async function startServer() {
@@ -83,7 +86,50 @@ export async function startServer() {
     console.log('Server shut down.');
   });
 
-  server = app.listen(configuration.server.port, function () {
+  server = http.createServer(app);
+
+
+  const wss: WSServer = new WebSocket.Server({ server });
+  wss.on('connection', ws => {
+
+    // Close broken connections
+    ws['isAlive'] = true;
+    ws.on('pong', () => { ws['isAlive'] = true; });
+    setInterval(() => {
+      if (!ws['isAlive']) {
+        ws.terminate();
+      } else {
+        ws['isAlive'] = false;
+        try {
+          ws.ping();
+        } catch (_) {
+          ws.terminate();
+        }
+      }
+    }, 10000);
+
+    ws.on('message', (message: string) => {
+      const parsedMessage: {path: string, [key: string]: string} = JSON.parse(message);
+      switch (parsedMessage.path) {
+        // Get service logs
+        case 'logs':
+          const process = commandRunner.processes[parsedMessage.project][parsedMessage.service][0];
+          process.logs.forEach(log => ws.send(log.trimRight()));
+          process.process.stdout.on('data', data => {
+            try {
+              ws.send(data.toString().trimRight());
+            } catch (_) {
+              ws.terminate();
+            }
+          });
+          break;
+      }
+    });
+    ws.send(`Hello!`);
+  });
+
+  // Start the server
+  server.listen(configuration.server.port, function () {
     console.log(`Server started, listening port ${configuration.server.port}`);
   });
 }

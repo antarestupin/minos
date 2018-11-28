@@ -39,12 +39,14 @@ var CommandRunner_1 = require("../lib/commands/CommandRunner");
 var globalConfig_1 = require("../lib/userConfig/globalConfig");
 var config_1 = require("../config");
 var fs_1 = require("fs");
+var http = require("http");
 var express = require('express');
+var WebSocket = require('ws');
 var bodyParser = require('body-parser');
 function startServer() {
     return __awaiter(this, void 0, void 0, function () {
         var _this = this;
-        var app, server, configuration, commandRunner, load;
+        var app, server, configuration, commandRunner, load, wss;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -156,7 +158,48 @@ function startServer() {
                             }
                         });
                     }); });
-                    server = app.listen(configuration.server.port, function () {
+                    server = http.createServer(app);
+                    wss = new WebSocket.Server({ server: server });
+                    wss.on('connection', function (ws) {
+                        // Close broken connections
+                        ws['isAlive'] = true;
+                        ws.on('pong', function () { ws['isAlive'] = true; });
+                        setInterval(function () {
+                            if (!ws['isAlive']) {
+                                ws.terminate();
+                            }
+                            else {
+                                ws['isAlive'] = false;
+                                try {
+                                    ws.ping();
+                                }
+                                catch (_) {
+                                    ws.terminate();
+                                }
+                            }
+                        }, 10000);
+                        ws.on('message', function (message) {
+                            var parsedMessage = JSON.parse(message);
+                            switch (parsedMessage.path) {
+                                // Get service logs
+                                case 'logs':
+                                    var process_1 = commandRunner.processes[parsedMessage.project][parsedMessage.service][0];
+                                    process_1.logs.forEach(function (log) { return ws.send(log.trimRight()); });
+                                    process_1.process.stdout.on('data', function (data) {
+                                        try {
+                                            ws.send(data.toString().trimRight());
+                                        }
+                                        catch (_) {
+                                            ws.terminate();
+                                        }
+                                    });
+                                    break;
+                            }
+                        });
+                        ws.send("Hello!");
+                    });
+                    // Start the server
+                    server.listen(configuration.server.port, function () {
                         console.log("Server started, listening port " + configuration.server.port);
                     });
                     return [2 /*return*/];

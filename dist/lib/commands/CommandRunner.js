@@ -92,7 +92,7 @@ var CommandRunner = /** @class */ (function () {
     CommandRunner.prototype.runCommandOnService = function (project, service, command) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
-            var serviceConfig, result;
+            var serviceConfig;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -135,16 +135,14 @@ var CommandRunner = /** @class */ (function () {
                                 exec: function (bashCommand) { return _this.exec(bashCommand, serviceConfig.path); },
                                 run: function (bashCommand) { return _this.run(bashCommand, project, service, serviceConfig.path); },
                                 kill: function () {
-                                    _this.processes[project][service].forEach(function (process) { return process.kill(); });
+                                    _this.processes[project][service].forEach(function (process) { return process.process.kill(); });
                                     _this.processes[project][service] = [];
                                 },
                                 cleanProcesses: function () {
                                     _this.processes[project][service] = [];
                                 },
                             })];
-                    case 1:
-                        result = _a.sent();
-                        return [2 /*return*/, result];
+                    case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
@@ -172,7 +170,12 @@ var CommandRunner = /** @class */ (function () {
         var process = child_process_1.exec(bashCommand, {
             cwd: fromPath,
         });
-        this.processes[project][service].push(process);
+        var logs = [];
+        this.processes[project][service].push({ process: process, logs: logs });
+        process.stdout.on('data', function (data) {
+            logs.push(data.toString());
+        });
+        process.stdout.on('exit', function () { return console.log("Service " + service + " finished starting"); });
         return process;
     };
     return CommandRunner;

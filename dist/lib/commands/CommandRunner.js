@@ -56,14 +56,14 @@ var CommandRunner = /** @class */ (function () {
                     case 0:
                         try {
                             services = this.configuration
-                                .projects.filter(function (_a) {
+                                .projects.find(function (_a) {
                                 var name = _a.name;
                                 return name === project;
-                            })[0]
-                                .groups.filter(function (_a) {
+                            })
+                                .groups.find(function (_a) {
                                 var name = _a.name;
                                 return name === group;
-                            })[0].services;
+                            }).services;
                         }
                         catch (e) {
                             if (e.message.indexOf('groups') !== -1) {
@@ -98,14 +98,14 @@ var CommandRunner = /** @class */ (function () {
                     case 0:
                         try {
                             serviceConfig = this.configuration
-                                .projects.filter(function (_a) {
+                                .projects.find(function (_a) {
                                 var name = _a.name;
                                 return name === project;
-                            })[0]
-                                .services.filter(function (_a) {
+                            })
+                                .services.find(function (_a) {
                                 var name = _a.name;
                                 return name === service;
-                            })[0];
+                            });
                         }
                         catch (e) {
                             if (e.indexOf('services') !== -1) {

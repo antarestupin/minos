@@ -17,8 +17,8 @@ export class CommandRunner {
     let services;
     try {
       services = this.configuration
-        .projects.filter(({name}) => name === project)[0]
-        .groups.filter(({name}) => name === group)[0].services;
+        .projects.find(({name}) => name === project)
+        .groups.find(({name}) => name === group).services;
     } catch (e) {
       if (e.message.indexOf('groups') !== -1) {
         throw `No project ${project} found.`;
@@ -46,8 +46,8 @@ export class CommandRunner {
     let serviceConfig;
     try {
       serviceConfig = this.configuration
-        .projects.filter(({name}) => name === project)[0]
-        .services.filter(({name}) => name === service)[0];
+        .projects.find(({name}) => name === project)
+        .services.find(({name}) => name === service);
     } catch (e) {
       if (e.indexOf('services') !== -1) {
         throw `No project ${project} found.`;

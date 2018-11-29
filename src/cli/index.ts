@@ -90,19 +90,17 @@ program
   });
 
 program
-  .command('logs <target>')
+  .command('logs <targetService> <processName>')
   .description('Read target service logs.')
-  .action(async (target) => {
+  .action(async (targetService, processName) => {
     try {
       const configuration = await getGlobalConfig();
       const client = new Client(configuration.server);
+      let {project, serviceOrGroup} = parseTarget('service', targetService, configuration);
 
-      let {project, serviceOrGroup} = parseTarget('service', target, configuration);
-
-      for await (const log of client.fetchLogs(project, serviceOrGroup)) {
+      for await (const log of client.fetchLogs(project, serviceOrGroup, processName)) {
         console.log(log);
       }
-
     } catch (e) {
       console.log(e);
     }

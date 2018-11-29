@@ -133,7 +133,7 @@ var CommandRunner = /** @class */ (function () {
                                 configuration: this.configuration,
                                 processes: this.processes[project][service],
                                 exec: function (bashCommand) { return _this.exec(bashCommand, serviceConfig.path); },
-                                run: function (bashCommand) { return _this.run(bashCommand, project, service, serviceConfig.path); },
+                                run: function (processName, bashCommand) { return _this.run(bashCommand, project, service, serviceConfig.path, processName); },
                                 kill: function () {
                                     _this.processes[project][service].forEach(function (process) { return process.process.kill(); });
                                     _this.processes[project][service] = [];
@@ -166,16 +166,15 @@ var CommandRunner = /** @class */ (function () {
     /**
      * Run a long-running bash command without waiting it to end.
      */
-    CommandRunner.prototype.run = function (bashCommand, project, service, fromPath) {
+    CommandRunner.prototype.run = function (bashCommand, project, service, fromPath, processName) {
         var process = child_process_1.exec(bashCommand, {
             cwd: fromPath,
         });
         var logs = [];
-        this.processes[project][service].push({ process: process, logs: logs });
+        this.processes[project][service].push({ process: process, logs: logs, name: processName });
         process.stdout.on('data', function (data) {
             logs.push(data.toString());
         });
-        process.stdout.on('exit', function () { return console.log("Service " + service + " finished starting"); });
         return process;
     };
     return CommandRunner;

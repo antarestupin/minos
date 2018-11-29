@@ -113,7 +113,8 @@ export async function startServer() {
       switch (parsedMessage.path) {
         // Get service logs
         case 'logs':
-          const process = commandRunner.processes[parsedMessage.project][parsedMessage.service][0];
+          const process = commandRunner.processes[parsedMessage.project][parsedMessage.service]
+            .find(process => process.name === parsedMessage.process);
           process.logs.forEach(log => ws.send(log.trimRight()));
           process.process.stdout.on('data', data => {
             try {
@@ -125,7 +126,6 @@ export async function startServer() {
           break;
       }
     });
-    ws.send(`Hello!`);
   });
 
   // Start the server

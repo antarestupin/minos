@@ -7,7 +7,7 @@ export class CommandRunner {
     private configuration: userConfig,
 
     /** Store of running services processes. */
-    public processes: { [project: string]: { [service: string]: {process: ChildProcess, logs: string[]}[] } } = {},
+    public processes: { [project: string]: { [service: string]: {name: string, process: ChildProcess, logs: string[]}[] } } = {},
   ) {}
 
   /**
@@ -77,8 +77,8 @@ export class CommandRunner {
       service: serviceConfig,
       configuration: this.configuration,
       processes: this.processes[project][service],
-      exec: bashCommand => this.exec(bashCommand, serviceConfig.path),
-      run: bashCommand => this.run(bashCommand, project, service, serviceConfig.path),
+      exec: (bashCommand: string) => this.exec(bashCommand, serviceConfig.path),
+      run: (processName: string, bashCommand: string) => this.run(bashCommand, project, service, serviceConfig.path, processName),
       kill: () => {
         this.processes[project][service].forEach(process => process.process.kill());
         this.processes[project][service] = [];
@@ -111,17 +111,16 @@ export class CommandRunner {
   /**
    * Run a long-running bash command without waiting it to end.
    */
-  private run(bashCommand: string, project: string, service: string, fromPath: string): ChildProcess {
+  private run(bashCommand: string, project: string, service: string, fromPath: string, processName: string): ChildProcess {
     const process = exec(bashCommand, {
       cwd: fromPath,
     });
 
     const logs = [];
-    this.processes[project][service].push({process, logs});
+    this.processes[project][service].push({process, logs, name: processName});
     process.stdout.on('data', data => {
       logs.push(data.toString());
     });
-    process.stdout.on('exit', () => console.log(`Service ${service} finished starting`));
 
     return process;
   }

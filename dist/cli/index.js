@@ -163,9 +163,9 @@ program
     });
 }); });
 program
-    .command('logs <target>')
+    .command('logs <targetService> <processName>')
     .description('Read target service logs.')
-    .action(function (target) { return __awaiter(_this, void 0, void 0, function () {
+    .action(function (targetService, processName) { return __awaiter(_this, void 0, void 0, function () {
     var configuration, client, _a, project, serviceOrGroup, _b, _c, log, e_4_1, e_5, e_4, _d;
     return __generator(this, function (_e) {
         switch (_e.label) {
@@ -175,11 +175,11 @@ program
             case 1:
                 configuration = _e.sent();
                 client = new Client_1.Client(configuration.server);
-                _a = parseTarget('service', target, configuration), project = _a.project, serviceOrGroup = _a.serviceOrGroup;
+                _a = parseTarget('service', targetService, configuration), project = _a.project, serviceOrGroup = _a.serviceOrGroup;
                 _e.label = 2;
             case 2:
                 _e.trys.push([2, 8, 9, 14]);
-                _b = __asyncValues(client.fetchLogs(project, serviceOrGroup));
+                _b = __asyncValues(client.fetchLogs(project, serviceOrGroup, processName));
                 _e.label = 3;
             case 3: return [4 /*yield*/, _b.next()];
             case 4:

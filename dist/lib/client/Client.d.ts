@@ -8,5 +8,5 @@ export declare class Client {
     executeCommandOnGroup(command: string, project: string, group: string): Promise<Object>;
     changeConfig(newConfig: Object): Promise<Object>;
     shutdown(): Promise<Object>;
-    fetchLogs(project: string, service: string): AsyncIterableIterator<string>;
+    fetchLogs(project: string, service: string, processName: string): AsyncIterableIterator<string>;
 }

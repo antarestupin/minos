@@ -183,7 +183,8 @@ function startServer() {
                             switch (parsedMessage.path) {
                                 // Get service logs
                                 case 'logs':
-                                    var process_1 = commandRunner.processes[parsedMessage.project][parsedMessage.service][0];
+                                    var process_1 = commandRunner.processes[parsedMessage.project][parsedMessage.service]
+                                        .find(function (process) { return process.name === parsedMessage.process; });
                                     process_1.logs.forEach(function (log) { return ws.send(log.trimRight()); });
                                     process_1.process.stdout.on('data', function (data) {
                                         try {
@@ -196,7 +197,6 @@ function startServer() {
                                     break;
                             }
                         });
-                        ws.send("Hello!");
                     });
                     // Start the server
                     server.listen(configuration.server.port, function () {

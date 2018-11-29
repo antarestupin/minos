@@ -119,7 +119,7 @@ var Client = /** @class */ (function () {
             });
         });
     };
-    Client.prototype.fetchLogs = function (project, service) {
+    Client.prototype.fetchLogs = function (project, service, processName) {
         return __asyncGenerator(this, arguments, function fetchLogs_1() {
             var ws, buffer;
             return __generator(this, function (_a) {
@@ -131,6 +131,7 @@ var Client = /** @class */ (function () {
                                 path: 'logs',
                                 project: project,
                                 service: service,
+                                process: processName
                             };
                             ws.send(JSON.stringify(message));
                         });

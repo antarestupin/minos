@@ -7,6 +7,7 @@ export declare class CommandRunner {
     processes: {
         [project: string]: {
             [service: string]: {
+                name: string;
                 process: ChildProcess;
                 logs: string[];
             }[];
@@ -17,6 +18,7 @@ export declare class CommandRunner {
         processes?: {
         [project: string]: {
             [service: string]: {
+                name: string;
                 process: ChildProcess;
                 logs: string[];
             }[];
@@ -39,5 +41,5 @@ export declare class CommandRunner {
     /**
      * Run a long-running bash command without waiting it to end.
      */
-    private run(bashCommand, project, service, fromPath);
+    private run(bashCommand, project, service, fromPath, processName);
 }

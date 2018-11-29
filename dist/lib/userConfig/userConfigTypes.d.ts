@@ -67,7 +67,11 @@ export declare type commandArgs = {
     configuration: userConfig;
     exec: (command: string) => any;
     run: (command: string) => ChildProcess;
-    processes: ChildProcess[];
+    processes: {
+        name: string;
+        process: ChildProcess;
+        logs: string[];
+    }[];
     kill: () => void;
     cleanProcesses: () => void;
 };

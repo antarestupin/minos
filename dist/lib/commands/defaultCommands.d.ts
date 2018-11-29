@@ -9,7 +9,7 @@ declare const _default: {
         kill: any;
     }) => any;
     restart: (args: commandArgs) => void;
-    isRunning: ({ processes }: commandArgs) => boolean;
+    isRunning: ({ processes }: commandArgs) => {};
     update: ({ exec }: {
         exec: any;
     }) => any;

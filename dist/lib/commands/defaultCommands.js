@@ -15,7 +15,11 @@ var restart = function (args) {
 };
 var isRunning = function (_a) {
     var processes = _a.processes;
-    return processes.length > 0;
+    var result = {};
+    processes.forEach(function (process) {
+        result[process.name] = !process.process.killed;
+    });
+    return result;
 };
 var update = function (_a) {
     var exec = _a.exec;

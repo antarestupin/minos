@@ -11,7 +11,13 @@ const restart = (args: commandArgs) => {
   args.service.commands.start(args);
 };
 
-const isRunning = ({processes}: commandArgs) => processes.length > 0;
+const isRunning = ({processes}: commandArgs) => {
+  const result = {};
+  processes.forEach(process => {
+    result[process.name] = !process.process.killed;
+  });
+  return result;
+};
 
 const update = ({exec}) => exec(`git checkout master && git pull origin master`);
 

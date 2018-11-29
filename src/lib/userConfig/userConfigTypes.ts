@@ -74,7 +74,7 @@ export type commandArgs = {
   configuration: userConfig,
   exec: (command: string) => any,
   run: (command: string) => ChildProcess, // execs a bash command and return the pid
-  processes: ChildProcess[], // processes of running commands,
+  processes: {name: string, process: ChildProcess, logs: string[]}[], // processes of running commands,
   kill: () => void,
   cleanProcesses: () => void,
 };

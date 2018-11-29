@@ -91,26 +91,17 @@ program
 
 program
   .command('logs <target>')
-  .description('Execute the command on every service that implements it in target. [targetType] must be group or service.')
+  .description('Read target service logs.')
   .action(async (target) => {
     try {
       const configuration = await getGlobalConfig();
-      // const client = new Client(configuration.server);
+      const client = new Client(configuration.server);
 
       let {project, serviceOrGroup} = parseTarget('service', target, configuration);
 
-      const ws = new WebSocket(`ws://localhost:${configuration.server.port}`);
-      ws.on('open', () => {
-        const message = {
-          path: 'logs',
-          project,
-          service: serviceOrGroup,
-        };
-        ws.send(JSON.stringify(message));
-      });
-      ws.on('message', (message: string) => {
-        console.log(message);
-      });
+      for await (const log of client.fetchLogs(project, serviceOrGroup)) {
+        console.log(log);
+      }
 
     } catch (e) {
       console.log(e);

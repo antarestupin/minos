@@ -1,5 +1,6 @@
 import {serverConfig} from '../userConfig/userConfigTypes';
 import axios, {AxiosResponse} from 'axios';
+import WebSocket = require('ws');
 
 export class Client {
 
@@ -43,5 +44,39 @@ export class Client {
 
   async shutdown(): Promise<Object> {
     return this.sendRequest(() => axios.post(`http://localhost:${this.serverConfig.port}/api/shutdown`));
+  }
+
+  async *fetchLogs(project: string, service: string): AsyncIterableIterator<string> {
+    const ws = new WebSocket(`ws://localhost:${this.serverConfig.port}`);
+
+    ws.on('open', () => {
+      const message = {
+        path: 'logs',
+        project,
+        service,
+      };
+      ws.send(JSON.stringify(message));
+    });
+
+    const buffer = [];
+    ws.on('message', (message: string) => {
+      buffer.push(message);
+    });
+
+    while (true) {
+      yield await new Promise<string>(resolve => {
+        if (buffer.length > 0) {
+          resolve(buffer.shift());
+        } else {
+          let interval;
+          interval = setInterval(() => {
+            if (buffer.length > 0) {
+              resolve(buffer.shift());
+              clearInterval(interval);
+            }
+          }, 50);
+        }
+      });
+    }
   }
 }

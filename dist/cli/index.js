@@ -34,6 +34,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator];
+    return m ? m.call(o) : typeof __values === "function" ? __values(o) : o[Symbol.iterator]();
+};
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var Client_1 = require("../lib/client/Client");
@@ -159,35 +164,55 @@ program
 }); });
 program
     .command('logs <target>')
-    .description('Execute the command on every service that implements it in target. [targetType] must be group or service.')
+    .description('Read target service logs.')
     .action(function (target) { return __awaiter(_this, void 0, void 0, function () {
-    var configuration, _a, project_1, serviceOrGroup_1, ws_1, e_4;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var configuration, client, _a, project, serviceOrGroup, _b, _c, log, e_4_1, e_5, e_4, _d;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
             case 0:
-                _b.trys.push([0, 2, , 3]);
+                _e.trys.push([0, 15, , 16]);
                 return [4 /*yield*/, globalConfig_1.getGlobalConfig()];
             case 1:
-                configuration = _b.sent();
-                _a = parseTarget('service', target, configuration), project_1 = _a.project, serviceOrGroup_1 = _a.serviceOrGroup;
-                ws_1 = new WebSocket("ws://localhost:" + configuration.server.port);
-                ws_1.on('open', function () {
-                    var message = {
-                        path: 'logs',
-                        project: project_1,
-                        service: serviceOrGroup_1,
-                    };
-                    ws_1.send(JSON.stringify(message));
-                });
-                ws_1.on('message', function (message) {
-                    console.log(message);
-                });
-                return [3 /*break*/, 3];
+                configuration = _e.sent();
+                client = new Client_1.Client(configuration.server);
+                _a = parseTarget('service', target, configuration), project = _a.project, serviceOrGroup = _a.serviceOrGroup;
+                _e.label = 2;
             case 2:
-                e_4 = _b.sent();
-                console.log(e_4);
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/];
+                _e.trys.push([2, 8, 9, 14]);
+                _b = __asyncValues(client.fetchLogs(project, serviceOrGroup));
+                _e.label = 3;
+            case 3: return [4 /*yield*/, _b.next()];
+            case 4:
+                if (!(_c = _e.sent(), !_c.done)) return [3 /*break*/, 7];
+                return [4 /*yield*/, _c.value];
+            case 5:
+                log = _e.sent();
+                console.log(log);
+                _e.label = 6;
+            case 6: return [3 /*break*/, 3];
+            case 7: return [3 /*break*/, 14];
+            case 8:
+                e_4_1 = _e.sent();
+                e_4 = { error: e_4_1 };
+                return [3 /*break*/, 14];
+            case 9:
+                _e.trys.push([9, , 12, 13]);
+                if (!(_c && !_c.done && (_d = _b.return))) return [3 /*break*/, 11];
+                return [4 /*yield*/, _d.call(_b)];
+            case 10:
+                _e.sent();
+                _e.label = 11;
+            case 11: return [3 /*break*/, 13];
+            case 12:
+                if (e_4) throw e_4.error;
+                return [7 /*endfinally*/];
+            case 13: return [7 /*endfinally*/];
+            case 14: return [3 /*break*/, 16];
+            case 15:
+                e_5 = _e.sent();
+                console.log(e_5);
+                return [3 /*break*/, 16];
+            case 16: return [2 /*return*/];
         }
     });
 }); });

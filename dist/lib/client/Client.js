@@ -34,8 +34,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __await = (this && this.__await) || function (v) { return this instanceof __await ? (this.v = v, this) : new __await(v); }
+var __asyncGenerator = (this && this.__asyncGenerator) || function (thisArg, _arguments, generator) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var g = generator.apply(thisArg, _arguments || []), i, q = [];
+    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r);  }
+    function fulfill(value) { resume("next", value); }
+    function reject(value) { resume("throw", value); }
+    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var axios_1 = require("axios");
+var WebSocket = require("ws");
 var Client = /** @class */ (function () {
     function Client(serverConfig) {
         this.serverConfig = serverConfig;
@@ -103,6 +116,51 @@ var Client = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, this.sendRequest(function () { return axios_1.default.post("http://localhost:" + _this.serverConfig.port + "/api/shutdown"); })];
+            });
+        });
+    };
+    Client.prototype.fetchLogs = function (project, service) {
+        return __asyncGenerator(this, arguments, function fetchLogs_1() {
+            var ws, buffer;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        ws = new WebSocket("ws://localhost:" + this.serverConfig.port);
+                        ws.on('open', function () {
+                            var message = {
+                                path: 'logs',
+                                project: project,
+                                service: service,
+                            };
+                            ws.send(JSON.stringify(message));
+                        });
+                        buffer = [];
+                        ws.on('message', function (message) {
+                            buffer.push(message);
+                        });
+                        _a.label = 1;
+                    case 1:
+                        if (!true) return [3 /*break*/, 4];
+                        return [4 /*yield*/, __await(new Promise(function (resolve) {
+                                if (buffer.length > 0) {
+                                    resolve(buffer.shift());
+                                }
+                                else {
+                                    var interval_1;
+                                    interval_1 = setInterval(function () {
+                                        if (buffer.length > 0) {
+                                            resolve(buffer.shift());
+                                            clearInterval(interval_1);
+                                        }
+                                    }, 50);
+                                }
+                            }))];
+                    case 2: return [4 /*yield*/, _a.sent()];
+                    case 3:
+                        _a.sent();
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/];
+                }
             });
         });
     };

@@ -8,7 +8,7 @@ declare const _default: {
     stop: ({ kill }: {
         kill: any;
     }) => any;
-    restart: (args: commandArgs) => void;
+    restart: (args: commandArgs) => Promise<any>;
     isRunning: ({ processes }: commandArgs) => {};
     update: ({ exec }: {
         exec: any;

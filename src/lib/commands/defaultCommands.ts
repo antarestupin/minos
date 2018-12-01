@@ -6,9 +6,9 @@ const build = () => {}; // Do nothing
 
 const stop = ({kill}) => kill();
 
-const restart = (args: commandArgs) => {
-  args.service.commands.stop(args);
-  args.service.commands.start(args);
+const restart = async (args: commandArgs) => {
+  await args.service.commands.stop(args);
+  return args.service.commands.start(args);
 };
 
 const isRunning = ({processes}: commandArgs) => {

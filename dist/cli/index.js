@@ -164,8 +164,9 @@ program
 }); });
 program
     .command('logs <targetService> <processName>')
+    .option('--fromNow', 'Only fetch logs from now (skip logs from the beginning)')
     .description('Read target service logs.')
-    .action(function (targetService, processName) { return __awaiter(_this, void 0, void 0, function () {
+    .action(function (targetService, processName, cmd) { return __awaiter(_this, void 0, void 0, function () {
     var configuration, client, _a, project, serviceOrGroup, _b, _c, log, e_4_1, e_5, e_4, _d;
     return __generator(this, function (_e) {
         switch (_e.label) {
@@ -179,7 +180,7 @@ program
                 _e.label = 2;
             case 2:
                 _e.trys.push([2, 8, 9, 14]);
-                _b = __asyncValues(client.fetchLogs(project, serviceOrGroup, processName));
+                _b = __asyncValues(client.fetchLogs(project, serviceOrGroup, processName, !cmd.fromNow));
                 _e.label = 3;
             case 3: return [4 /*yield*/, _b.next()];
             case 4:

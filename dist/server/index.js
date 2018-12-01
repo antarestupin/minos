@@ -194,7 +194,9 @@ function startServer() {
                                         _b.sent();
                                         process_1 = commandRunner.processes[parsedMessage.project][parsedMessage.service]
                                             .find(function (process) { return process.name === parsedMessage.process; });
-                                        process_1.logs.forEach(function (log) { return ws.send(log.trimRight()); });
+                                        if (parsedMessage.fromBeginning === true) {
+                                            process_1.logs.forEach(function (log) { return ws.send(log.trimRight()); });
+                                        }
                                         process_1.process.stdout.on('data', function (data) {
                                             try {
                                                 ws.send(data.toString().trimRight());

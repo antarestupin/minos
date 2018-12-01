@@ -91,14 +91,15 @@ program
 
 program
   .command('logs <targetService> <processName>')
+  .option('--fromNow', 'Only fetch logs from now (skip logs from the beginning)')
   .description('Read target service logs.')
-  .action(async (targetService, processName) => {
+  .action(async (targetService, processName, cmd) => {
     try {
       const configuration = await getGlobalConfig();
       const client = new Client(configuration.server);
       let {project, serviceOrGroup} = parseTarget('service', targetService, configuration);
 
-      for await (const log of client.fetchLogs(project, serviceOrGroup, processName)) {
+      for await (const log of client.fetchLogs(project, serviceOrGroup, processName, !cmd.fromNow)) {
         console.log(log);
       }
     } catch (e) {

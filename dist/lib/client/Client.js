@@ -119,7 +119,8 @@ var Client = /** @class */ (function () {
             });
         });
     };
-    Client.prototype.fetchLogs = function (project, service, processName) {
+    Client.prototype.fetchLogs = function (project, service, processName, fromBeginning) {
+        if (fromBeginning === void 0) { fromBeginning = true; }
         return __asyncGenerator(this, arguments, function fetchLogs_1() {
             var ws, buffer;
             return __generator(this, function (_a) {
@@ -131,7 +132,8 @@ var Client = /** @class */ (function () {
                                 path: 'logs',
                                 project: project,
                                 service: service,
-                                process: processName
+                                process: processName,
+                                fromBeginning: fromBeginning,
                             };
                             ws.send(JSON.stringify(message));
                         });

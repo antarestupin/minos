@@ -46,7 +46,7 @@ export class Client {
     return this.sendRequest(() => axios.post(`http://localhost:${this.serverConfig.port}/api/shutdown`));
   }
 
-  async *fetchLogs(project: string, service: string, processName: string): AsyncIterableIterator<string> {
+  async *fetchLogs(project: string, service: string, processName: string, fromBeginning: boolean = true): AsyncIterableIterator<string> {
     const ws = new WebSocket(`ws://localhost:${this.serverConfig.port}`);
 
     ws.on('open', () => {
@@ -54,7 +54,8 @@ export class Client {
         path: 'logs',
         project,
         service,
-        process: processName
+        process: processName,
+        fromBeginning,
       };
       ws.send(JSON.stringify(message));
     });

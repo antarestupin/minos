@@ -14,20 +14,11 @@ export class CommandRunner {
    * Run a command on each service of a group.
    */
   async runCommandOnGroup(project: string, group: string, command: string): Promise<{[service: string]: any}> {
-    let services;
-    try {
-      services = this.configuration
-        .projects.find(({name}) => name === project)
-        .groups.find(({name}) => name === group).services;
-    } catch (e) {
-      if (e.message.indexOf('groups') !== -1) {
-        throw `No project ${project} found.`;
-      } else if (e.message.indexOf('services') !== -1) {
-        throw `No group ${group} found.`;
-      } else {
-        throw e.message;
-      }
-    }
+    const projectConfig = this.configuration.projects.find(({name}) => name === project);
+    if (!projectConfig) throw `No project ${project} found.`;
+    const groupConfig = projectConfig.groups.find(({name}) => name === group);
+    if (!groupConfig) throw `No group ${group} found.`;
+    const services = groupConfig.services;
 
     const commandResults = await Promise.all(
       services.map(service => this.runCommandOnService(project, service, command))
@@ -43,22 +34,10 @@ export class CommandRunner {
    * Run a service command with provided context.
    */
   async runCommandOnService(project: string, service: string, command: string): Promise<any> {
-    let serviceConfig;
-    try {
-      serviceConfig = this.configuration
-        .projects.find(({name}) => name === project)
-        .services.find(({name}) => name === service);
-    } catch (e) {
-      if (e.indexOf('services') !== -1) {
-        throw `No project ${project} found.`;
-      } else {
-        throw e;
-      }
-    }
-
-    if (!serviceConfig) {
-      throw `No service ${service} found.`;
-    }
+    const projectConfig = this.configuration.projects.find(({name}) => name === project);
+    if (!projectConfig) throw `No project ${project} found.`;
+    const serviceConfig = projectConfig.services.find(({name}) => name === service);
+    if (!serviceConfig) throw `No service ${service} found.`;
 
     // don't run commands that are not defined
     if (!serviceConfig.commands[command]) {
@@ -77,8 +56,8 @@ export class CommandRunner {
       service: serviceConfig,
       configuration: this.configuration,
       processes: this.processes[project][service],
-      exec: (bashCommand: string) => this.exec(bashCommand, serviceConfig.path),
-      run: (processName: string, bashCommand: string) => this.run(bashCommand, project, service, serviceConfig.path, processName),
+      exec: (bashCommand) => this.exec(bashCommand, serviceConfig.path),
+      run: (processName, bashCommand) => this.run(bashCommand, project, service, serviceConfig.path, processName),
       kill: () => {
         this.processes[project][service].forEach(process => process.process.kill());
         this.processes[project][service] = [];

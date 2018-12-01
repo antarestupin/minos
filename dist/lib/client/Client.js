@@ -53,6 +53,9 @@ var Client = /** @class */ (function () {
     function Client(serverConfig) {
         this.serverConfig = serverConfig;
     }
+    /**
+     * Send a request to the server.
+     */
     Client.prototype.sendRequest = function (request) {
         return __awaiter(this, void 0, void 0, function () {
             var response, e_1;
@@ -78,6 +81,9 @@ var Client = /** @class */ (function () {
             });
         });
     };
+    /**
+     * Execute given command on a service.
+     */
     Client.prototype.executeCommandOnService = function (command, project, service) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
@@ -89,6 +95,9 @@ var Client = /** @class */ (function () {
             });
         });
     };
+    /**
+     * Execute given command on a group.
+     */
     Client.prototype.executeCommandOnGroup = function (command, project, group) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
@@ -100,6 +109,9 @@ var Client = /** @class */ (function () {
             });
         });
     };
+    /**
+     * Add changes to the global configuration.
+     */
     Client.prototype.changeConfig = function (newConfig) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
@@ -111,6 +123,9 @@ var Client = /** @class */ (function () {
             });
         });
     };
+    /**
+     * Shut down the local server.
+     */
     Client.prototype.shutdown = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
@@ -119,6 +134,9 @@ var Client = /** @class */ (function () {
             });
         });
     };
+    /**
+     * Fetch logs for given process of a service.
+     */
     Client.prototype.fetchLogs = function (project, service, processName, fromBeginning) {
         if (fromBeginning === void 0) { fromBeginning = true; }
         return __asyncGenerator(this, arguments, function fetchLogs_1() {

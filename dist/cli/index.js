@@ -165,7 +165,7 @@ program
 program
     .command('logs <targetService> <processName>')
     .option('--fromNow', 'Only fetch logs from now (skip logs from the beginning)')
-    .description('Read target service logs.')
+    .description('Read target service logs. <processName> is the name of the process as defined by the `run()` helper.')
     .action(function (targetService, processName, cmd) { return __awaiter(_this, void 0, void 0, function () {
     var configuration, client, _a, project, serviceOrGroup, _b, _c, log, e_4_1, e_5, e_4, _d;
     return __generator(this, function (_e) {

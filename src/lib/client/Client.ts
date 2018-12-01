@@ -8,7 +8,10 @@ export class Client {
     private serverConfig: serverConfig
   ) {}
 
-  async sendRequest(request: () => Promise<AxiosResponse>): Promise<any> {
+  /**
+   * Send a request to the server.
+   */
+  private async sendRequest(request: () => Promise<AxiosResponse>): Promise<any> {
     try {
       const response = await request();
       return response.data;
@@ -21,6 +24,9 @@ export class Client {
     }
   }
 
+  /**
+   * Execute given command on a service.
+   */
   async executeCommandOnService(command: string, project: string, service: string): Promise<Object> {
     return (await this.sendRequest(() => axios.post(
       `http://localhost:${this.serverConfig.port}/api/command/service`,
@@ -28,6 +34,9 @@ export class Client {
     ))).data;
   }
 
+  /**
+   * Execute given command on a group.
+   */
   async executeCommandOnGroup(command: string, project: string, group: string): Promise<Object> {
     return (await this.sendRequest(() => axios.post(
       `http://localhost:${this.serverConfig.port}/api/command/group`,
@@ -35,6 +44,9 @@ export class Client {
     ))).data;
   }
 
+  /**
+   * Add changes to the global configuration.
+   */
   async changeConfig(newConfig: Object): Promise<Object> {
     return (await this.sendRequest(() => axios.post(
       `http://localhost:${this.serverConfig.port}/api/config`,
@@ -42,10 +54,16 @@ export class Client {
     ))).data;
   }
 
+  /**
+   * Shut down the local server.
+   */
   async shutdown(): Promise<Object> {
     return this.sendRequest(() => axios.post(`http://localhost:${this.serverConfig.port}/api/shutdown`));
   }
 
+  /**
+   * Fetch logs for given process of a service.
+   */
   async *fetchLogs(project: string, service: string, processName: string, fromBeginning: boolean = true): AsyncIterableIterator<string> {
     const ws = new WebSocket(`ws://localhost:${this.serverConfig.port}`);
 

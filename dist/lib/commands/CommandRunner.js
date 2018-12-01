@@ -50,32 +50,23 @@ var CommandRunner = /** @class */ (function () {
     CommandRunner.prototype.runCommandOnGroup = function (project, group, command) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
-            var services, commandResults, results;
+            var projectConfig, groupConfig, services, commandResults, results;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        try {
-                            services = this.configuration
-                                .projects.find(function (_a) {
-                                var name = _a.name;
-                                return name === project;
-                            })
-                                .groups.find(function (_a) {
-                                var name = _a.name;
-                                return name === group;
-                            }).services;
-                        }
-                        catch (e) {
-                            if (e.message.indexOf('groups') !== -1) {
-                                throw "No project " + project + " found.";
-                            }
-                            else if (e.message.indexOf('services') !== -1) {
-                                throw "No group " + group + " found.";
-                            }
-                            else {
-                                throw e.message;
-                            }
-                        }
+                        projectConfig = this.configuration.projects.find(function (_a) {
+                            var name = _a.name;
+                            return name === project;
+                        });
+                        if (!projectConfig)
+                            throw "No project " + project + " found.";
+                        groupConfig = projectConfig.groups.find(function (_a) {
+                            var name = _a.name;
+                            return name === group;
+                        });
+                        if (!groupConfig)
+                            throw "No group " + group + " found.";
+                        services = groupConfig.services;
                         return [4 /*yield*/, Promise.all(services.map(function (service) { return _this.runCommandOnService(project, service, command); }))];
                     case 1:
                         commandResults = _a.sent();
@@ -92,32 +83,22 @@ var CommandRunner = /** @class */ (function () {
     CommandRunner.prototype.runCommandOnService = function (project, service, command) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
-            var serviceConfig;
+            var projectConfig, serviceConfig;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        try {
-                            serviceConfig = this.configuration
-                                .projects.find(function (_a) {
-                                var name = _a.name;
-                                return name === project;
-                            })
-                                .services.find(function (_a) {
-                                var name = _a.name;
-                                return name === service;
-                            });
-                        }
-                        catch (e) {
-                            if (e.indexOf('services') !== -1) {
-                                throw "No project " + project + " found.";
-                            }
-                            else {
-                                throw e;
-                            }
-                        }
-                        if (!serviceConfig) {
+                        projectConfig = this.configuration.projects.find(function (_a) {
+                            var name = _a.name;
+                            return name === project;
+                        });
+                        if (!projectConfig)
+                            throw "No project " + project + " found.";
+                        serviceConfig = projectConfig.services.find(function (_a) {
+                            var name = _a.name;
+                            return name === service;
+                        });
+                        if (!serviceConfig)
                             throw "No service " + service + " found.";
-                        }
                         // don't run commands that are not defined
                         if (!serviceConfig.commands[command]) {
                             return [2 /*return*/, null];

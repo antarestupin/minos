@@ -72,8 +72,8 @@ export type command = (args: commandArgs) => any
 export type commandArgs = {
   service: serviceConfig,
   configuration: userConfig,
-  exec: (command: string) => any,
-  run: (command: string) => ChildProcess, // execs a bash command and return the pid
+  exec: (command: string) => Promise<string[]>, // execs a short-running bash command and returns every output line produced
+  run: (processName: string, bashCommand: string) => ChildProcess, // runs a long-lasting bash command and returns the child process
   processes: {name: string, process: ChildProcess, logs: string[]}[], // processes of running commands,
   kill: () => void,
   cleanProcesses: () => void,

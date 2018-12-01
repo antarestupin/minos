@@ -92,7 +92,7 @@ program
 program
   .command('logs <targetService> <processName>')
   .option('--fromNow', 'Only fetch logs from now (skip logs from the beginning)')
-  .description('Read target service logs.')
+  .description('Read target service logs. <processName> is the name of the process as defined by the `run()` helper.')
   .action(async (targetService, processName, cmd) => {
     try {
       const configuration = await getGlobalConfig();

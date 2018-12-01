@@ -65,8 +65,8 @@ export declare type command = (args: commandArgs) => any;
 export declare type commandArgs = {
     service: serviceConfig;
     configuration: userConfig;
-    exec: (command: string) => any;
-    run: (command: string) => ChildProcess;
+    exec: (command: string) => Promise<string[]>;
+    run: (processName: string, bashCommand: string) => ChildProcess;
     processes: {
         name: string;
         process: ChildProcess;

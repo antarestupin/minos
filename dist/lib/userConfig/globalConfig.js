@@ -38,11 +38,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var UserConfigBuilder_1 = require("./UserConfigBuilder");
 var fs_1 = require("fs");
 var config_1 = require("../../config");
+/**
+ * Get raw global config (before being built).
+ */
 function getRawGlobalConfig() {
     var rawRootConfig = fs_1.readFileSync(config_1.globalConfigPath, 'utf8');
     return JSON.parse(rawRootConfig);
 }
 exports.getRawGlobalConfig = getRawGlobalConfig;
+/**
+ * Get global config (built).
+ */
 function getGlobalConfig() {
     return __awaiter(this, void 0, void 0, function () {
         var userConfigBuilder, rootConfig;

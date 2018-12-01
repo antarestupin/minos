@@ -1,6 +1,7 @@
 import {projectConfig, rootConfig, serviceConfig, userConfig} from './userConfigTypes';
 import {defaultServerConf, defaultUserProjectConfig} from '../../config';
 import defaultCommands from '../commands/defaultCommands';
+import {purgeCache} from './requireCache';
 
 export class UserConfigBuilder {
 
@@ -15,6 +16,10 @@ export class UserConfigBuilder {
     const projects = await Promise.all(
       rootConfig.projects
         .map(UserConfigBuilder.replaceHomeInPath)
+        .map(path => {
+          purgeCache(path);
+          return path;
+        })
         .map(this.getProjectConfig)
     );
 

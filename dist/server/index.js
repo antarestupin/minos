@@ -178,25 +178,36 @@ function startServer() {
                                 }
                             }
                         }, 10000);
-                        ws.on('message', function (message) {
-                            var parsedMessage = JSON.parse(message);
-                            switch (parsedMessage.path) {
-                                // Get service logs
-                                case 'logs':
-                                    var process_1 = commandRunner.processes[parsedMessage.project][parsedMessage.service]
-                                        .find(function (process) { return process.name === parsedMessage.process; });
-                                    process_1.logs.forEach(function (log) { return ws.send(log.trimRight()); });
-                                    process_1.process.stdout.on('data', function (data) {
-                                        try {
-                                            ws.send(data.toString().trimRight());
+                        ws.on('message', function (message) { return __awaiter(_this, void 0, void 0, function () {
+                            var parsedMessage, _a, process_1;
+                            return __generator(this, function (_b) {
+                                switch (_b.label) {
+                                    case 0:
+                                        parsedMessage = JSON.parse(message);
+                                        _a = parsedMessage.path;
+                                        switch (_a) {
+                                            case 'logs': return [3 /*break*/, 1];
                                         }
-                                        catch (_) {
-                                            ws.terminate();
-                                        }
-                                    });
-                                    break;
-                            }
-                        });
+                                        return [3 /*break*/, 3];
+                                    case 1: return [4 /*yield*/, load()];
+                                    case 2:
+                                        _b.sent();
+                                        process_1 = commandRunner.processes[parsedMessage.project][parsedMessage.service]
+                                            .find(function (process) { return process.name === parsedMessage.process; });
+                                        process_1.logs.forEach(function (log) { return ws.send(log.trimRight()); });
+                                        process_1.process.stdout.on('data', function (data) {
+                                            try {
+                                                ws.send(data.toString().trimRight());
+                                            }
+                                            catch (_) {
+                                                ws.terminate();
+                                            }
+                                        });
+                                        return [3 /*break*/, 3];
+                                    case 3: return [2 /*return*/];
+                                }
+                            });
+                        }); });
                     });
                     // Start the server
                     server.listen(configuration.server.port, function () {

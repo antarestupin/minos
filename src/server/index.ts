@@ -108,11 +108,12 @@ export async function startServer() {
       }
     }, 10000);
 
-    ws.on('message', (message: string) => {
+    ws.on('message', async (message: string) => {
       const parsedMessage: {path: string, [key: string]: string} = JSON.parse(message);
       switch (parsedMessage.path) {
         // Get service logs
         case 'logs':
+          await load();
           const process = commandRunner.processes[parsedMessage.project][parsedMessage.service]
             .find(process => process.name === parsedMessage.process);
           process.logs.forEach(log => ws.send(log.trimRight()));

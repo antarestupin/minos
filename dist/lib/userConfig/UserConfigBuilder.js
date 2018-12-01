@@ -45,6 +45,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var config_1 = require("../../config");
 var defaultCommands_1 = require("../commands/defaultCommands");
+var requireCache_1 = require("./requireCache");
 var UserConfigBuilder = /** @class */ (function () {
     function UserConfigBuilder() {
     }
@@ -62,6 +63,10 @@ var UserConfigBuilder = /** @class */ (function () {
                         rootConfig.server.port = rootConfig.server.port || config_1.defaultServerConf.port;
                         return [4 /*yield*/, Promise.all(rootConfig.projects
                                 .map(UserConfigBuilder.replaceHomeInPath)
+                                .map(function (path) {
+                                requireCache_1.purgeCache(path);
+                                return path;
+                            })
                                 .map(this.getProjectConfig))];
                     case 1:
                         projects = _a.sent();

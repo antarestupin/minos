@@ -59,7 +59,7 @@ module.exports = {
       // at least `start` must be defined, other commands are optional
       commands: {
         build: ({exec}) => { exec('npm run build'); }, // `exec` runs a short-running task
-        start: ({run}) => { run(`npm run start`); }, // `run` runs a long-running task
+        start: ({run}) => { run('server', 'npm run start'); }, // `run` runs a long-running task; the process is named 'server'
       }
     },
     // the authentication service
@@ -69,7 +69,7 @@ module.exports = {
       repository: 'https://github.com/chat-app/auth.git',
       commands: {
         build: ({exec}) => { exec('docker-compose build'); },
-        start: ({run}) => { run(`docker-compose run`); },
+        start: ({run}) => { run('server', 'docker-compose run'); },
       }
     }
   ],
@@ -175,7 +175,7 @@ These are the commands integrated out of the box:
 | `stop`       | Stop the service | Kills the running processes; think to use `cleanProcesses` when defining it yourself |
 | `isRunning`  | Say if the service is running | Checks running instances |
 | `restart`    | Restart the service | `stop` & `start` |
-| `update`     | Update the service from the remote source | `git pull origin master` |
+| `update`     | Update the service from the remote source | `git checkout master && git pull origin master` |
 | `isUpToDate` | Say if the service is up to date | Not done yet, should compare current and remote master branches |
 
 The `start` command is the only one that must be defined by the user, every other ones will have a default behavior but

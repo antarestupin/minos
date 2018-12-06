@@ -36,10 +36,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var install = function (_a) {
+var fetch = function (_a) {
     var exec = _a.exec, service = _a.service;
-    return exec("git clone " + service.repository);
+    return exec("git clone " + service.repository + " " + service.path);
 };
+var install = function () { }; // Do nothing
 var build = function () { }; // Do nothing
 var stop = function (_a) {
     var kill = _a.kill;
@@ -69,6 +70,7 @@ var update = function (_a) {
 };
 var isUpToDate = function () { }; // TODO
 exports.default = {
+    fetch: fetch,
     install: install,
     build: build,
     stop: stop,

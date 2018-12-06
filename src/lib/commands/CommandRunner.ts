@@ -58,6 +58,20 @@ export class CommandRunner {
       processes: this.processes[project][service],
       exec: (bashCommand) => this.exec(bashCommand, serviceConfig.path),
       run: (processName, bashCommand) => this.run(bashCommand, project, service, serviceConfig.path, processName),
+      awaitOutput: (process, expectedOutput, errorOutput, timeout) => new Promise((resolve, reject) => {
+        const timeoutReject = setTimeout(reject, timeout);
+
+        process.stdout.on('data', data => {
+          const convertedData = data.toString();
+          if (convertedData.match(expectedOutput)) {
+            resolve();
+            clearTimeout(timeoutReject);
+          } else if (convertedData.match(errorOutput)) {
+            reject(convertedData);
+            clearTimeout(timeoutReject);
+          }
+        });
+      }),
       kill: () => {
         this.processes[project][service].forEach(process => process.process.kill());
         this.processes[project][service] = [];

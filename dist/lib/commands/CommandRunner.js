@@ -115,6 +115,20 @@ var CommandRunner = /** @class */ (function () {
                                 processes: this.processes[project][service],
                                 exec: function (bashCommand) { return _this.exec(bashCommand, serviceConfig.path); },
                                 run: function (processName, bashCommand) { return _this.run(bashCommand, project, service, serviceConfig.path, processName); },
+                                awaitOutput: function (process, expectedOutput, errorOutput, timeout) { return new Promise(function (resolve, reject) {
+                                    var timeoutReject = setTimeout(reject, timeout);
+                                    process.stdout.on('data', function (data) {
+                                        var convertedData = data.toString();
+                                        if (convertedData.match(expectedOutput)) {
+                                            resolve();
+                                            clearTimeout(timeoutReject);
+                                        }
+                                        else if (convertedData.match(errorOutput)) {
+                                            reject(convertedData);
+                                            clearTimeout(timeoutReject);
+                                        }
+                                    });
+                                }); },
                                 kill: function () {
                                     _this.processes[project][service].forEach(function (process) { return process.process.kill(); });
                                     _this.processes[project][service] = [];

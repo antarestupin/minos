@@ -8,7 +8,11 @@ module.exports = {
         build: ({exec}) => {
           return exec('ls -a').then(result => result[0].split('\n').filter(i => !!i));
         },
-        start: ({run}) => { run('server', `node ./service1.js`) },
+        start: ({run, awaitOutput}) => {
+          awaitOutput(run('server', `node ./service1.js`), 'hello: 3', null, 8000)
+            .then(() => console.log('ok'))
+            .catch(() => console.log('fail'))
+        },
       }
     },
     {

@@ -1,9 +1,10 @@
 import { commandArgs } from '../userConfig/userConfigTypes';
 declare const _default: {
-    install: ({ exec, service }: {
+    fetch: ({ exec, service }: {
         exec: any;
         service: any;
     }) => any;
+    install: () => void;
     build: () => void;
     stop: ({ kill }: {
         kill: any;

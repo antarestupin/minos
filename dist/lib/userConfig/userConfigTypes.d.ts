@@ -67,6 +67,7 @@ export declare type commandArgs = {
     configuration: userConfig;
     exec: (command: string) => Promise<string[]>;
     run: (processName: string, bashCommand: string) => ChildProcess;
+    awaitOutput: (process: ChildProcess, expectedOutput: string | RegExp, errorOutput: string | RegExp, timeout: number) => Promise<null | string>;
     processes: {
         name: string;
         process: ChildProcess;

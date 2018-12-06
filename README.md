@@ -201,6 +201,7 @@ Here they are:
 | `processes`                                                   | The list of running processes for the service |
 | `exec(bashCommand: string): Promise<string[]>`                | Executes given short-running command from the service path, like `ls` and returns every output line produced |
 | `run(processName: string, bashCommand: string): ChildProcess` | Runs given long-lasting command from the service path, like `npm run start` |
+| `awaitOutput(process: ChildProcess, expectedOutput: string/RegExp, errorOutput: string/RegExp, timeout: number): Promise<null/string>` | Awaits for `expectedOutput` before processing the next step; fails at `errorOutput` or at timeout |
 | `kill(): void`                                                | Kills running processes of the service; no need to call `cleanProcesses` if you run `kill` |
 | `cleanProcesses(): void`                                      | Empties the list of running processes for the service; note it doesn't kill them, `kill` does |
 

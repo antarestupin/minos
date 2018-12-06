@@ -1,6 +1,6 @@
 import {commandArgs} from '../userConfig/userConfigTypes';
 
-const fetch = ({exec, service}) => exec(`git clone ${service.repository} ${service.path}`);
+const fetch = ({exec, service}) => exec(`git clone ${service.repository.url} ${service.path}`);
 
 const install = () => {}; // Do nothing
 

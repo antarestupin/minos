@@ -169,8 +169,9 @@ These are the commands integrated out of the box:
 
 | Command | Effect | Default |
 | ------- | ------ | ------- |
-| `install`    | Install the service from the remote source | `git clone ${repositoryUrl} ${path}` |
-| `build`      | Build the service | Does nothing |
+| `fetch`      | Fetch the service from the remote source | `git clone ${repositoryUrl} ${path}` |
+| `install`    | Install the service locally; typically what you should do only once to setup the service | Does nothing |
+| `build`      | Build the service; things like importing dependencies, building Docker containers... | Does nothing |
 | `start`      | Start the service | |
 | `stop`       | Stop the service | Kills the running processes; think to use `cleanProcesses` when defining it yourself |
 | `isRunning`  | Say if the service is running | Checks running instances |

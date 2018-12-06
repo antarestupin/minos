@@ -1,6 +1,8 @@
 import {commandArgs} from '../userConfig/userConfigTypes';
 
-const install = ({exec, service}) => exec(`git clone ${service.repository}`);
+const fetch = ({exec, service}) => exec(`git clone ${service.repository} ${service.path}`);
+
+const install = () => {}; // Do nothing
 
 const build = () => {}; // Do nothing
 
@@ -24,6 +26,7 @@ const update = ({exec}) => exec(`git checkout master && git pull origin master`)
 const isUpToDate = () => {}; // TODO
 
 export default {
+  fetch,
   install,
   build,
   stop,

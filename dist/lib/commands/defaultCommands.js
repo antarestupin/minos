@@ -38,7 +38,7 @@ var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 var fetch = function (_a) {
     var exec = _a.exec, service = _a.service;
-    return exec("git clone " + service.repository + " " + service.path);
+    return exec("git clone " + service.repository.url + " " + service.path);
 };
 var install = function () { }; // Do nothing
 var build = function () { }; // Do nothing

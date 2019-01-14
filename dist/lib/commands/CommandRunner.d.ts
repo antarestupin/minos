@@ -37,7 +37,7 @@ export declare class CommandRunner {
     /**
      * Run a bash command.
      */
-    private exec(bashCommand, fromPath);
+    private exec(bashCommand, fromPath, splitLine);
     /**
      * Run a long-running bash command without waiting it to end.
      */

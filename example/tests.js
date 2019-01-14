@@ -6,6 +6,9 @@ module.exports = {
       path: '~/workspace/github/minos/example/service1',
       commands: {
         build: ({exec}) => {
+          return exec('docker help', {splitLine: true});
+          // return exec('ls -a');
+          return exec('ls -a').then(result => result[0]);
           return exec('ls -a').then(result => result[0].split('\n').filter(i => !!i));
         },
         start: ({run, awaitOutput}) => {

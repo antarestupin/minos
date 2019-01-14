@@ -113,14 +113,17 @@ var CommandRunner = /** @class */ (function () {
                                 service: serviceConfig,
                                 configuration: this.configuration,
                                 processes: this.processes[project][service],
-                                exec: function (bashCommand) { return _this.exec(bashCommand, serviceConfig.path); },
+                                exec: function (bashCommand, _a) {
+                                    var _b = (_a === void 0 ? { splitLine: true } : _a).splitLine, splitLine = _b === void 0 ? true : _b;
+                                    return _this.exec(bashCommand, serviceConfig.path, splitLine);
+                                },
                                 run: function (processName, bashCommand) { return _this.run(bashCommand, project, service, serviceConfig.path, processName); },
                                 awaitOutput: function (process, expectedOutput, errorOutput, timeout) { return new Promise(function (resolve, reject) {
                                     var timeoutReject = setTimeout(reject, timeout);
                                     process.stdout.on('data', function (data) {
                                         var convertedData = data.toString();
                                         if (convertedData.match(expectedOutput)) {
-                                            resolve();
+                                            resolve(convertedData);
                                             clearTimeout(timeoutReject);
                                         }
                                         else if (convertedData.match(errorOutput)) {
@@ -145,14 +148,17 @@ var CommandRunner = /** @class */ (function () {
     /**
      * Run a bash command.
      */
-    CommandRunner.prototype.exec = function (bashCommand, fromPath) {
+    CommandRunner.prototype.exec = function (bashCommand, fromPath, splitLine) {
         var child = child_process_1.exec(bashCommand, {
             cwd: fromPath,
         });
         var output = [];
         child.stdout.on('data', function (data) {
-            output.push(data);
+            output.push(splitLine ? data.trim().toString().split('\n') : data.toString());
         });
+        if (splitLine) {
+            output = [].concat.apply([], output);
+        }
         return new Promise(function (resolve, reject) {
             child.addListener('error', reject);
             child.addListener('exit', function () { return resolve(output); });

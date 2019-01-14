@@ -56,7 +56,7 @@ export class CommandRunner {
       service: serviceConfig,
       configuration: this.configuration,
       processes: this.processes[project][service],
-      exec: (bashCommand) => this.exec(bashCommand, serviceConfig.path),
+      exec: (bashCommand, {splitLine = true} = {splitLine: true}) => this.exec(bashCommand, serviceConfig.path, splitLine),
       run: (processName, bashCommand) => this.run(bashCommand, project, service, serviceConfig.path, processName),
       awaitOutput: (process, expectedOutput, errorOutput, timeout) => new Promise((resolve, reject) => {
         const timeoutReject = setTimeout(reject, timeout);
@@ -64,7 +64,7 @@ export class CommandRunner {
         process.stdout.on('data', data => {
           const convertedData = data.toString();
           if (convertedData.match(expectedOutput)) {
-            resolve();
+            resolve(convertedData);
             clearTimeout(timeoutReject);
           } else if (convertedData.match(errorOutput)) {
             reject(convertedData);
@@ -85,15 +85,19 @@ export class CommandRunner {
   /**
    * Run a bash command.
    */
-  private exec(bashCommand: string, fromPath: string): Promise<string[]> {
+  private exec(bashCommand: string, fromPath: string, splitLine: boolean): Promise<string[]> {
     const child = exec(bashCommand, {
       cwd: fromPath,
     });
 
     let output = [];
     child.stdout.on('data', (data) => {
-      output.push(data);
+      output.push(splitLine ? data.trim().toString().split('\n') : data.toString());
     });
+
+    if (splitLine) {
+      output = [].concat.apply([], output);
+    }
 
     return new Promise((resolve, reject) => {
       child.addListener('error', reject);

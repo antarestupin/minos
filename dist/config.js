@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.globalConfigPath = process.env.HOME + "/.minos.json";
+exports.globalConfigPath = `${process.env.HOME}/.minos.json`;
 exports.defaultUserProjectConfig = {
     repositoryType: 'git',
 };

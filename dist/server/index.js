@@ -72,6 +72,7 @@ async function startServer() {
         res.send();
         await server.close();
         console.log('Server shut down.');
+        process.exit();
     });
     server = http.createServer(app);
     const wss = new WebSocket.Server({ server });

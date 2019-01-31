@@ -84,6 +84,7 @@ export async function startServer() {
 
     await server.close();
     console.log('Server shut down.');
+    process.exit();
   });
 
   server = http.createServer(app);
